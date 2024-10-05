@@ -41,35 +41,6 @@ def plot_profile_data(
     target_fan = [row[4] for row in profile_data]
 
     #
-    ## Set up the figure
-    #
-
-    # Create a new figure
-    plt.figure(figsize=(20, 8))
-
-    # Create subplot 1
-    plt.subplot(2, 1, 1)
-
-    # Add labels and title
-    plt.ylabel("Temperature (°C)")
-    plt.title("Roast Profile Temperature Curve")
-
-    # Set min and max values for axes
-    plt.xlim(0, max(target_time) + 60)
-    plt.ylim(0, 375)
-
-    # Set custom ticks for x and y axes
-    plt.xticks(np.arange(0, max(target_time) + 60, step=15))
-    plt.yticks(np.arange(0, 375, step=25))
-
-    # Format x-axis ticks as mm:ss
-    formatter = FuncFormatter(seconds_to_mmss)
-    plt.gca().xaxis.set_major_formatter(formatter)
-
-    # Add grid
-    plt.grid(True)
-
-    #
     ## Begin data processing
     #
 
@@ -88,12 +59,38 @@ def plot_profile_data(
         target_time,
     )
 
+
     #
-    ## Begin plotting
+    ## Set up the figure
     #
 
+    #
+    ## Create subplot 1 - Temperatures
+    #
+
+    temp_axis = plt.subplot(2, 1, 1)
+
+    # Add labels and title
+    # temp_axis.ylabel("Temperature (°C)")
+    temp_axis.set_title("Roast Profile Temperature Curve")
+
+    # Set min and max values for axes
+    temp_axis.set_xlim(0, max(target_time) + 60)
+    temp_axis.set_ylim(0, 375)
+
+    # # Set custom ticks for x and y axes
+    temp_axis.set_xticks(np.arange(0, max(target_time) + 60, step=15))
+    temp_axis.set_yticks(np.arange(0, 375, step=25))
+
+    # Format x-axis ticks as mm:ss
+    formatter = FuncFormatter(seconds_to_mmss)
+    temp_axis.xaxis.set_major_formatter(formatter)
+
+    # Add grid
+    temp_axis.grid(True)
+
     # Plot the preset temperature points
-    plt.scatter(
+    temp_axis.scatter(
         target_time,
         target_temperature,
         color="red",
@@ -101,42 +98,49 @@ def plot_profile_data(
     )
 
     # Plot the fitted curve
-    plt.plot(
+    temp_axis.plot(
         target_time_smooth,
         target_temperature_smooth,
         label="Predetermined Roast Profile",
         color="blue",
     )
 
+    # Add a legend
+    temp_axis.legend()
+
+    #
+    ## Create subplot 2 - Fan Speed and RPM
+    #
+
     # Plot the preset fan and RPM values
-    plt.subplot(2, 1, 2)
+    fan_rpm_pow_axis = plt.subplot(2, 1, 2)
 
     # Add labels and title
-    plt.ylabel("Fan Speed [%] / RPM")
+    fan_rpm_pow_axis.set_ylabel("Fan Speed [%] / RPM")
 
     # Set min and max values for axes
-    plt.xlim(0, max(target_time) + 60)
-    plt.ylim(0, 100)
+    fan_rpm_pow_axis.set_xlim(0, max(target_time) + 60)
+    fan_rpm_pow_axis.set_ylim(0, 100)
 
     # Set custom ticks for x and y axes
-    plt.xticks(np.arange(0, max(target_time) + 60, step=15))
-    plt.yticks(np.arange(0, 100, step=25))
+    fan_rpm_pow_axis.set_xticks(np.arange(0, max(target_time) + 60, step=15))
+    fan_rpm_pow_axis.set_yticks(np.arange(0, 100, step=25))
 
     # Format x-axis ticks as mm:ss
     formatter = FuncFormatter(seconds_to_mmss)
-    plt.gca().xaxis.set_major_formatter(formatter)
+    fan_rpm_pow_axis.xaxis.set_major_formatter(formatter)
 
     # Add grid
-    plt.grid(True)
+    fan_rpm_pow_axis.grid(True)
 
     # Plot the preset fan and RPM curves
-    plt.plot(
+    fan_rpm_pow_axis.plot(
         target_time_smooth,
         target_fan_smooth,
         label="Fan Speed",
         color="green",
     )
-    plt.plot(
+    fan_rpm_pow_axis.plot(
         target_time_smooth,
         target_RPM_smooth,
         label="RPM",
@@ -145,6 +149,3 @@ def plot_profile_data(
 
     # Add a legend
     plt.legend()
-
-    # Save the figure
-    plt.savefig("roast_profile.png")
