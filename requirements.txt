@@ -1,2 +1,5 @@
 nicegui
 matplotlib
+scipy
+numpy
+psycogpy2-binary
